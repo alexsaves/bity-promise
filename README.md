@@ -22,6 +22,7 @@ var p = new promise(function() {
 
 p.make("promiseA");
 p.make("promiseB");
+p.make(["promiseC", "promiseD"]);
 
 p.break("promiseA");
 p.resolve("promiseB");
