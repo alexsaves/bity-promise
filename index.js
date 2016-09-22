@@ -5,7 +5,7 @@
  * @param expire_timeout Number (optional)
  * @constructor
  */
-var Promise = function(success, failure, expire_timeout) {
+var Promise = function (success, failure, expire_timeout) {
   this.success = success;
   this.failure = failure;
   this.promises = {};
@@ -17,8 +17,8 @@ var Promise = function(success, failure, expire_timeout) {
     resolved: 3
   };
   if (!isNaN(this.expire_timeout)) {
-    this._expireTimer = setTimeout(function(ctx) {
-      return function() {
+    this._expireTimer = setTimeout(function (ctx) {
+      return function () {
         for (var prom in ctx.promises) {
           if (ctx.promises[prom] === ctx.statuses.pending) {
             ctx.promises[prom] = ctx.statuses.broken;
@@ -34,15 +34,21 @@ var Promise = function(success, failure, expire_timeout) {
  * Make a promise
  * @param name String
  */
-Promise.prototype.make = function(name) {
-  this.promises[name] = this.statuses.pending;
+Promise.prototype.make = function (name) {
+  if (name instanceof Array) {
+    for (var i = 0; i < name.length; i++) {
+      this.make(name[i]);
+    }
+  } else {
+    this.promises[name] = this.statuses.pending;
+  }
 };
 
 /**
  * Break a promise
  * @param name String
  */
-Promise.prototype.break = function(name) {
+Promise.prototype.break = function (name) {
   this.promises[name] = this.statuses.broken;
   this._check();
 };
@@ -51,7 +57,7 @@ Promise.prototype.break = function(name) {
  * Resolve a promise
  * @param name String
  */
-Promise.prototype.resolve = function(name) {
+Promise.prototype.resolve = function (name) {
   this.promises[name] = this.statuses.resolved;
   this._check();
 };
@@ -60,7 +66,7 @@ Promise.prototype.resolve = function(name) {
  * Check our promises
  * @private
  */
-Promise.prototype._check = function() {
+Promise.prototype._check = function () {
   if (this._signaled) {
     return;
   }
