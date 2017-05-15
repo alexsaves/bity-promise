@@ -1,6 +1,6 @@
 {
   "name": "bity-promise",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Yet another simple promise system for Node - but with timeouts",
   "main": "index.js",
   "scripts": {

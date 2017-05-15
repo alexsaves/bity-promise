@@ -5,11 +5,12 @@
  * @param expire_timeout Number (optional)
  * @constructor
  */
-var Promise = function (success, failure, expire_timeout) {
+var Promise = function (success, failure, expire_timeout, debugmode) {
   this.success = success;
   this.failure = failure;
   this.promises = {};
   this._signaled = false;
+  this._debugMode = !!debugmode;
   this.expire_timeout = parseInt(expire_timeout);
   this.statuses = {
     pending: 1,
@@ -21,7 +22,12 @@ var Promise = function (success, failure, expire_timeout) {
       return function () {
         for (var prom in ctx.promises) {
           if (ctx.promises[prom] === ctx.statuses.pending) {
+            if (ctx._debugMode) {
+              console.log("** bity-promise ** Promise " + prom + " was still pending when we gave up");
+            }
             ctx.promises[prom] = ctx.statuses.broken;
+          } else if (ctx.promises[prom] === ctx.statuses.broken && ctx._debugMode) {
+            console.log("** bity-promise ** Promise " + prom + " was broken when we gave up");
           }
           ctx._check();
         }
