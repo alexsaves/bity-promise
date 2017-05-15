@@ -20,6 +20,9 @@ var Promise = function (success, failure, expire_timeout, debugmode) {
   if (!isNaN(this.expire_timeout)) {
     this._expireTimer = setTimeout(function (ctx) {
       return function () {
+        if (ctx._debugMode) {
+          console.log("** bity-promise ** TIMED OUT ON PROMISES");
+        }
         for (var prom in ctx.promises) {
           if (ctx.promises[prom] === ctx.statuses.pending) {
             if (ctx._debugMode) {
@@ -55,6 +58,9 @@ Promise.prototype.make = function (name) {
  * @param name String
  */
 Promise.prototype.break = function (name) {
+  if (this._debugMode) {
+    console.log("** bity-promise ** Promise " + name + " was BROKEN");
+  }
   this.promises[name] = this.statuses.broken;
   this._check();
 };
